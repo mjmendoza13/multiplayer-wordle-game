@@ -1,16 +1,8 @@
 import { asc, eq } from 'drizzle-orm'
 import { cookies } from 'next/headers'
 import { db } from '@/lib/db'
-import { games, players, type Game, type Player } from '@/lib/db/schema'
-import {
-  completedRounds,
-  evaluateGuess,
-  isDone,
-  isMatchDone,
-  totalScore,
-  type GameState,
-  type PublicPlayer,
-} from '@/lib/wordle'
+import { games, players, type Player } from '@/lib/db/schema'
+import { evaluateGuess, isDone, score, type GameState, type PublicPlayer } from '@/lib/wordle'
 
 export function playerCookieName(code: string) {
   return `wordle_player_${code}`
@@ -43,12 +35,7 @@ export async function loadGame(code: string) {
   return { game, roster }
 }
 
-export function roundWords(game: Game) {
-  return game.words.length > 0 ? game.words : [game.word]
-}
-
-function toPublic(p: Player, words: string[], rounds: number, revealLetters: boolean): PublicPlayer {
-  const word = words[p.round] ?? words[0]
+function toPublic(p: Player, word: string, revealLetters: boolean): PublicPlayer {
   return {
     name: p.name,
     seat: p.seat,
@@ -57,10 +44,6 @@ function toPublic(p: Player, words: string[], rounds: number, revealLetters: boo
     done: isDone(p),
     evaluations: p.guesses.map((g) => evaluateGuess(g, word)),
     guesses: revealLetters ? p.guesses : null,
-    round: p.round,
-    matchDone: isMatchDone(p, rounds),
-    totalScore: totalScore(p),
-    results: completedRounds(p).map((r) => ({ tries: r.guesses.length, solved: r.solved })),
   }
 }
 
@@ -71,15 +54,13 @@ export async function buildGameState(code: string, playerId: string): Promise<Ga
   const me = roster.find((p) => p.id === playerId)
   if (!me) return null
   const opponent = roster.find((p) => p.id !== playerId) ?? null
-  const words = roundWords(game)
-  const rounds = game.rounds
 
-  const finished = !!opponent && isMatchDone(me, rounds) && isMatchDone(opponent, rounds)
+  const finished = !!opponent && isDone(me) && isDone(opponent)
   let winnerSeat: number | null = null
   let isTie = false
   if (finished && opponent) {
-    const a = totalScore(me)
-    const b = totalScore(opponent)
+    const a = score(me)
+    const b = score(opponent)
     if (a === b) isTie = true
     else winnerSeat = a < b ? me.seat : opponent.seat
   }
@@ -87,12 +68,10 @@ export async function buildGameState(code: string, playerId: string): Promise<Ga
   return {
     code,
     status: !opponent ? 'waiting' : finished ? 'finished' : 'playing',
-    rounds,
-    me: toPublic(me, words, rounds, true),
-    opponent: opponent ? toPublic(opponent, words, rounds, finished) : null,
+    me: toPublic(me, game.word, true),
+    opponent: opponent ? toPublic(opponent, game.word, finished) : null,
     winnerSeat,
     isTie,
-    word: isDone(me) ? words[me.round] : null,
-    words: finished ? words.slice(0, rounds) : null,
+    word: finished || isDone(me) ? game.word : null,
   }
 }

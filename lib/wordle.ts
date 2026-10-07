@@ -25,32 +25,13 @@ export function evaluateGuess(guess: string, answer: string): LetterState[] {
   return result
 }
 
-export const ROUND_OPTIONS = [1, 5, 10] as const
-export const MISS_SCORE = MAX_GUESSES + 1
-
-export type RoundResult = { guesses: string[]; solved: boolean }
-
-export function isDone(player: RoundResult) {
+export function isDone(player: { guesses: string[]; solved: boolean }) {
   return player.solved || player.guesses.length >= MAX_GUESSES
 }
 
 /** Lower is better; failing to solve counts as one more than the max. */
-export function score(player: RoundResult) {
-  return player.solved ? player.guesses.length : MISS_SCORE
-}
-
-type MatchPlayer = RoundResult & { round: number; history: RoundResult[] }
-
-export function completedRounds(p: MatchPlayer): RoundResult[] {
-  return isDone(p) ? [...p.history, { guesses: p.guesses, solved: p.solved }] : p.history
-}
-
-export function isMatchDone(p: MatchPlayer, rounds: number) {
-  return p.round >= rounds - 1 && isDone(p)
-}
-
-export function totalScore(p: MatchPlayer) {
-  return completedRounds(p).reduce((sum, r) => sum + score(r), 0)
+export function score(player: { guesses: string[]; solved: boolean }) {
+  return player.solved ? player.guesses.length : MAX_GUESSES + 1
 }
 
 export function normalizeGuess(raw: string) {
@@ -69,22 +50,14 @@ export type PublicPlayer = {
   done: boolean
   evaluations: LetterState[][]
   guesses: string[] | null
-  round: number
-  matchDone: boolean
-  totalScore: number
-  results: { tries: number; solved: boolean }[]
 }
 
 export type GameState = {
   code: string
   status: 'waiting' | 'playing' | 'finished'
-  rounds: number
   me: PublicPlayer
   opponent: PublicPlayer | null
   winnerSeat: number | null
   isTie: boolean
-  /** The answer for my current round, once I've finished it. */
   word: string | null
-  /** Every round's answer, only once the match is finished. */
-  words: string[] | null
 }

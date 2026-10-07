@@ -9,7 +9,7 @@ export default function Page() {
           <BrandTiles />
           <h1 className="text-balance text-3xl font-semibold tracking-tight">WorDuel</h1>
           <p className="text-pretty text-muted-foreground">
-            Play Wordle with your friends
+            Same secret word. Six tries each. Whoever solves it in fewer guesses wins.
           </p>
         </header>
         <Lobby />
