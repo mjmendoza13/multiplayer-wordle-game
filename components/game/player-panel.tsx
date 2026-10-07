@@ -10,7 +10,15 @@ function statusText(p: PublicPlayer) {
   return `${p.tries} / ${MAX_GUESSES} tries`
 }
 
-export function PlayerPanel({ player, isYou }: { player: PublicPlayer; isYou?: boolean }) {
+export function PlayerPanel({
+  player,
+  isYou,
+  rounds = 1,
+}: {
+  player: PublicPlayer
+  isYou?: boolean
+  rounds?: number
+}) {
   return (
     <div className="flex items-center gap-4 rounded-xl border bg-card p-4">
       <Board
@@ -32,6 +40,11 @@ export function PlayerPanel({ player, isYou }: { player: PublicPlayer; isYou?: b
         >
           {statusText(player)}
         </span>
+        {rounds > 1 && (
+          <span className="text-xs text-muted-foreground">
+            {`Round ${player.round + 1} of ${rounds}`}
+          </span>
+        )}
       </div>
     </div>
   )

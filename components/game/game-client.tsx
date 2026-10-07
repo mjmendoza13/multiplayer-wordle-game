@@ -3,12 +3,13 @@
 import Link from 'next/link'
 import { useEffect, useEffectEvent, useMemo, useState, useTransition } from 'react'
 import useSWR from 'swr'
-import { submitGuess } from '@/app/actions/game'
+import { nextRound, submitGuess } from '@/app/actions/game'
 import { Board } from '@/components/game/board'
 import { InviteCard } from '@/components/game/invite-card'
 import { Keyboard } from '@/components/game/keyboard'
 import { PlayerPanel } from '@/components/game/player-panel'
 import { ResultBanner } from '@/components/game/result-banner'
+import { Scoreboard } from '@/components/game/scoreboard'
 import { WORD_LENGTH, type GameState, type LetterState } from '@/lib/wordle'
 
 const fetcher = async (url: string) => {
@@ -80,6 +81,18 @@ export function GameClient({ code, initialState }: { code: string; initialState:
     }
   }
 
+  function handleNextRound() {
+    startTransition(async () => {
+      const result = await nextRound(code)
+      if (result.error) {
+        flash(result.error)
+        return
+      }
+      setInput('')
+      await mutate()
+    })
+  }
+
   const onKeyDown = useEffectEvent((e: KeyboardEvent) => {
     if (e.metaKey || e.ctrlKey || e.altKey) return
     const target = e.target as HTMLElement | null
@@ -129,16 +142,19 @@ export function GameClient({ code, initialState }: { code: string; initialState:
             />
           </div>
           <div className="w-full max-w-lg">
-            <ResultBanner state={state} />
+            <ResultBanner state={state} onNextRound={handleNextRound} advancing={pending} />
           </div>
           {!me.done && <Keyboard letterStates={letterStates} onKey={handleKey} disabled={pending} />}
         </section>
 
         <aside aria-label="Players" className="flex w-full flex-col gap-3 lg:order-1 lg:w-72">
-          {opponent ? <PlayerPanel player={opponent} /> : <InviteCard code={code} />}
-          <PlayerPanel player={me} isYou />
+          {opponent ? <PlayerPanel player={opponent} rounds={state.rounds} /> : <InviteCard code={code} />}
+          <PlayerPanel player={me} isYou rounds={state.rounds} />
+          {state.rounds > 1 && <Scoreboard state={state} />}
           <p className="px-1 text-xs leading-relaxed text-muted-foreground">
-            {"Fewest guesses wins. You can see your opponent's colors, but not their letters until the game ends."}
+            {state.rounds > 1
+              ? "Fewest total guesses across all rounds wins; a missed word counts as 7. You see your opponent's colors, not their letters."
+              : "Fewest guesses wins. You can see your opponent's colors, but not their letters until the game ends."}
           </p>
         </aside>
       </main>
