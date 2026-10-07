@@ -3,6 +3,7 @@
 import { useActionState } from 'react'
 import { createGame, joinGame } from '@/app/actions/game'
 import { Button } from '@/components/ui/button'
+import { ROUND_OPTIONS } from '@/lib/wordle'
 
 const inputClass =
   'h-11 w-full rounded-md border border-input bg-background px-3 text-base outline-none transition focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/40'
@@ -31,6 +32,25 @@ export function Lobby({ defaultCode = '' }: { defaultCode?: string }) {
               <span className="text-muted-foreground">Your name</span>
               <input name="name" required maxLength={20} autoComplete="nickname" className={inputClass} />
             </label>
+            <fieldset className="flex flex-col gap-1.5 text-sm">
+              <legend className="mb-1.5 text-muted-foreground">Rounds</legend>
+              <div className="grid grid-cols-3 gap-2">
+                {ROUND_OPTIONS.map((n) => (
+                  <label key={n} className="cursor-pointer">
+                    <input
+                      type="radio"
+                      name="rounds"
+                      value={n}
+                      defaultChecked={n === 1}
+                      className="peer sr-only"
+                    />
+                    <span className="flex h-11 items-center justify-center rounded-md border border-input bg-background font-medium transition peer-checked:border-correct peer-checked:bg-correct peer-checked:text-white peer-focus-visible:ring-3 peer-focus-visible:ring-ring/40">
+                      {n === 1 ? 'Single' : `${n} rounds`}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
             {createState?.error && (
               <p role="alert" className="text-sm text-destructive">
                 {createState.error}
