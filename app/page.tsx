@@ -7,7 +7,7 @@ export default function Page() {
       <div className="flex w-full max-w-md flex-col items-center gap-8">
         <header className="flex flex-col items-center gap-4 text-center">
           <BrandTiles />
-          <h1 className="text-balance text-3xl font-semibold tracking-tight">Wordle Duel</h1>
+          <h1 className="text-balance text-3xl font-semibold tracking-tight">WorDuel</h1>
           <p className="text-pretty text-muted-foreground">
             Same secret word. Six tries each. Whoever solves it in fewer guesses wins.
           </p>

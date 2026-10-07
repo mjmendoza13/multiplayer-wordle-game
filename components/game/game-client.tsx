@@ -101,7 +101,7 @@ export function GameClient({ code, initialState }: { code: string; initialState:
     <div className="flex min-h-dvh flex-col">
       <header className="flex items-center justify-between border-b px-4 py-3 sm:px-6">
         <Link href="/" className="font-semibold tracking-tight">
-          Wordle Duel
+          WorDuel
         </Link>
         <span className="text-sm text-muted-foreground">
           {'Game '}

@@ -19,7 +19,7 @@ export default async function GamePage({ params }: { params: Promise<{ code: str
     return (
       <main className="flex min-h-dvh flex-col items-center justify-center px-4 py-12">
         <div className="flex w-full max-w-md flex-col items-center gap-6 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">Wordle Duel</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">WorDuel</h1>
           {full ? (
             <>
               <p className="text-muted-foreground">This game already has two players.</p>

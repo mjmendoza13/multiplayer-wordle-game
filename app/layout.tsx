@@ -7,7 +7,7 @@ const geistSans = Geist({ subsets: ['latin'], variable: '--font-geist-sans' })
 const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono' })
 
 export const metadata: Metadata = {
-  title: 'Wordle Duel — Head-to-head Wordle',
+  title: 'WorDuel — Head-to-head Wordle',
   description:
     'Challenge a friend to Wordle. Same word, six tries each — fewest guesses wins.',
   generator: 'v0.app',
