@@ -79,7 +79,7 @@ export const ANSWERS = [
   'visit', 'cabal', 'ridge', 'sling', 'aware', 'mucus', 'grail', 'stead', 'zones', 'soapy',
   'gazed', 'block', 'pride', 'melds', 'rodeo', 'above', 'spuds', 'tutus', 'blood', 'idyll',
   'gives', 'tuffs', 'named', 'coral', 'wench', 'cubed', 'lamer', 'imbue', 'hurts', 'cloak',
-  'cubic', 'riled', 'unbox', 'orcas', 'slick', 'maims', '
+  'cubic', 'riled', 'unbox', 'orcas', 'slick', 'maims',
 ]
 
 export function randomAnswers(count: number) {
