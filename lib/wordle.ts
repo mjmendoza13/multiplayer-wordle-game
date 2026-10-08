@@ -1,31 +1,7 @@
-import { TARGET_WORDS, ALL_VALID_WORDS } from "./words"
-export function isValidGuess(guess: string): boolean {
-  if (!guess || guess.length !== 5) return false
-  return ALL_VALID_WORDS.has(guess.toUpperCase())
-}
-export function normalizeWord(word: string): string {
-  return word.trim().toUpperCase()
 export const MAX_GUESSES = 6
 export const WORD_LENGTH = 5
 
 export type LetterState = 'correct' | 'present' | 'absent'
-  export interface EvaluatedTile {
-  letter: string
-  status: LetterStatus
-}
-
-/**
- * Evaluates a guess against the target answer (Green/Yellow/Gray scoring).
- */
-export function evaluateGuess(guess: string, answer: string): EvaluatedTile[] {
-  const normalizedGuess = normalizeWord(guess)
-  const normalizedAnswer = normalizeWord(answer)
-  
-  // ... Keep your existing letter comparison implementation ...
-  const result: EvaluatedTile[] = []
-  // (Your existing scoring logic goes here)
-  return result
-}
 
 export function evaluateGuess(guess: string, answer: string): LetterState[] {
   const result: LetterState[] = Array(WORD_LENGTH).fill('absent')
